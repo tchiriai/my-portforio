@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Minimalist Professional Portfolio">
+    <title>Portfolio | Minimalist & Professional</title>
+    <style>
+        /* * DESIGN TOKENS & RESET 
+         */
+        :root {
+            /* Colors: Minimal & High Contrast */
+            --c-bg-body: #FAFAFA;
+            --c-bg-card: #FFFFFF;
+            --c-bg-overlay: rgba(255, 255, 255, 0.85);
+            --c-text-primary: #111827; /* Dark Gray/Black */
+            --c-text-secondary: #6B7280; /* Medium Gray */
+            --c-text-accent: #2563EB; /* Professional Blue */
+            --c-border: #E5E7EB;
+            --c-divider: #F3F4F6;
+            
+            /* Typography */
+            --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --leading-tight: 1.2;
+            --leading-relaxed: 1.7;
+            
+            /* Spacing & Layout */
+            --max-width: 1100px;
+            --header-height: 80px;
+            --radius-md: 12px;
+            --radius-sm: 6px;
+            
+            /* Shadows (Subtle/Premium) */
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+            
+            /* Transitions */
+            --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
+            --duration-base: 0.4s;
+        }
+
+        /* Dark Mode Support (Optional but professional) */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --c-bg-body: #0F1115;
+                --c-bg-card: #161920;
+                --c-bg-overlay: rgba(15, 17, 21, 0.9);
+                --c-text-primary: #F9FAFB;
+                --c-text-secondary: #9CA3AF;
+                --c-text-accent: #60A5FA;
+                --c-border: #1F2937;
+                --c-divider: #1F2937;
+                --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+                --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--c-bg-body);
+            color: var(--c-text-primary);
+            line-height: var(--leading-relaxed);
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            transition: color 0.2s;
+        }
+
+        button {
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        /* * UTILITIES & LAYOUT 
+         */
+        .container {
+            width: 100%;
+            max-width: var(--max-width);
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .section {
+            padding: 120px 0;
+        }
+
+        .grid {
+            display: grid;
+            gap: 40px;
+        }
+
+        .flex-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* * TYPOGRAPHY 
+         */
+        h1, h2, h3 {
+            font-weight: 700;
+            line-height: var(--leading-tight);
+            letter-spacing: -0.02em;
+        }
+
+        .text-section-title {
+            font-size: clamp(1.75rem, 3vw, 2.25rem);
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .text-section-subtitle {
+            font-size: 0.95rem;
+            color: var(--c-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 2rem;
+            display: block;
+            font-weight: 500;
+        }
+
+        .text-body {
+            font-size: 1rem;
+            color: var(--c-text-secondary);
+        }
+
+        /* * NAVIGATION 
+         */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: var(--header-height);
+            background: rgba(255, 255, 255, 0.01); /* Glass effect handled by backdrop-filter */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(0,0,0,0.03);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s;
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo {
+            font-weight: 700;
+            font-size: 1.25rem;
+            letter-spacing: -0.03em;
+        }
+
+        .nav-list {
+            display: flex;
+            gap: 32px;
+        }
+
+        .nav-link {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--c-text-secondary);
+            position: relative;
+            padding: 4px 0;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--c-text-primary);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background-color: var(--c-text-primary);
+            transition: width 0.3s var(--ease-out);
+        }
+
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        /* * HERO SECTION 
+         */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: var(--header-height);
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 800px;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 6vw, 5rem);
+            margin-bottom: 24px;
+            background: linear-gradient(to right, var(--c-text-primary) 20%, var(--c-text-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-desc {
+            font-size: 1.125rem;
+            color: var(--c-text-secondary);
+            max-width: 500px;
+            margin-bottom: 40px;
+        }
+
+        /* * ABOUT SECTION 
+         */
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 60px;
+        }
+
+        .about-visual {
+            height: 100%;
+            min-height: 300px;
+            background-color: var(--c-divider);
+            border-radius: var(--radius-md);
+            position: relative;
+            overflow: hidden;
+            /* Abstract CSS Art */
+            background-image: radial-gradient(circle at 10% 20%, rgba(37, 99, 235, 0.05) 0%, transparent 20%),
+                              radial-gradient(circle at 90% 80%, rgba(37, 99, 235, 0.05) 0%, transparent 20%);
+        }
+        
+        .stat-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .stat-item h4 {
+            font-size: 2rem;
+            color: var(--c-text-primary);
+        }
+        .stat-item p {
+            font-size: 0.85rem;
+            color: var(--c-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* * WORKS SECTION 
+         */
+        .works-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 32px;
+        }
+
+        .work-card {
+            background: var(--c-bg-card);
+            border: 1px solid var(--c-border);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            transition: transform 0.3s var(--ease-out), box-shadow 0.3s var(--ease-out);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .work-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--c-text-accent);
+        }
+
+        .work-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+
+        .work-category {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--c-text-accent);
+            background: rgba(37, 99, 235, 0.08);
+            padding: 4px 10px;
+            border-radius: 100px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .work-title {
+            font-size: 1.25rem;
+            margin-bottom: 8px;
+            color: var(--c-text-primary);
+        }
+
+        .work-excerpt {
+            font-size: 0.95rem;
+            color: var(--c-text-secondary);
+            margin-bottom: 24px;
+            flex-grow: 1;
+        }
+
+        .work-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 0.8rem;
+            color: var(--c-text-secondary);
+            border-top: 1px solid var(--c-divider);
+            padding-top: 16px;
+        }
+
+        /* * MODAL 
+         */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .modal-overlay.is-open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: var(--c-bg-card);
+            width: 90%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-lg);
+            padding: 40px;
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s var(--ease-out);
+        }
+
+        .modal-overlay.is-open .modal-content {
+            transform: translateY(0);
+        }
+
+        .btn-close {
+            position: absolute;
+            top: 24px;
+            right: 24px;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-close:hover {
+            background: var(--c-divider);
+        }
+
+        .modal-body h3 {
+            font-size: 1.75rem;
+            margin-bottom: 8px; /* 12pxから調整 */
+        }
+
+        .modal-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--c-text-accent);
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-bottom: 24px;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .modal-link:hover {
+            opacity: 0.8;
+            text-decoration: underline;
+        }
+
+        .modal-role {
+            font-size: 0.9rem;
+            color: var(--c-text-accent);
+            font-weight: 600;
+            margin-bottom: 24px;
+            display: block;
+        }
+
+        .modal-detail-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 24px;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--c-divider);
+        }
+        
+        @media (min-width: 600px) {
+            .modal-detail-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .detail-item h5 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--c-text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tech-tag {
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border: 1px solid var(--c-border);
+            border-radius: 4px;
+            color: var(--c-text-primary);
+        }
+
+        /* * CONTACT & FOOTER 
+         */
+        .contact-layout {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            background: var(--c-text-primary);
+            color: var(--c-bg-card);
+            padding: 14px 32px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-top: 32px;
+            transition: opacity 0.2s, transform 0.2s;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        footer {
+            padding: 60px 0 30px;
+            border-top: 1px solid var(--c-divider);
+            margin-top: 80px;
+        }
+
+        .footer-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-link {
+            font-size: 0.85rem;
+            color: var(--c-text-secondary);
+            font-weight: 500;
+        }
+
+        .footer-link:hover {
+            color: var(--c-text-primary);
+            text-decoration: underline;
+        }
+
+        .copyright {
+            font-size: 0.75rem;
+            color: var(--c-text-secondary);
+        }
+
+        /* * ANIMATIONS 
+         */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s var(--ease-out);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Stagger delays */
+        .delay-100 { transition-delay: 0.1s; }
+        .delay-200 { transition-delay: 0.2s; }
+        .delay-300 { transition-delay: 0.3s; }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .about-grid { grid-template-columns: 1fr; }
+            .hero-title { font-size: 2.5rem; }
+            .nav-list { display: none; } /* Simplified for demo, ideally hamburger */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVIGATION -->
+    <header class="header">
+        <div class="container header-inner">
+            <a href="#" class="logo">MyPortfolio.</a>
+            <nav>
+                <ul class="nav-list">
+                    <li><a href="#home" class="nav-link active">Home</a></li>
+                    <li><a href="#about" class="nav-link">About</a></li>
+                    <li><a href="#works" class="nav-link">Works</a></li>
+                    <li><a href="#contact" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- HERO -->
+    <section id="home" class="hero section">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title reveal">
+                    Designing Logic.<br>
+                    Building Value.
+                </h1>
+                <p class="hero-desc reveal delay-100">
+                    東京を拠点とするデジタルプロダクトデザイナー兼エンジニア。<br>
+                    ビジネスの課題を、ミニマルで機能的なデザインと堅牢なコードで解決します。
+                </p>
+                <div class="reveal delay-200">
+                    <a href="#works" style="border-bottom: 1px solid var(--c-text-primary); padding-bottom: 2px; font-weight:500;">View Projects -></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="section">
+        <div class="container">
+            <span class="text-section-subtitle reveal">Who I am</span>
+            <div class="about-grid">
+                <div class="about-text reveal delay-100">
+                    <h2 class="text-section-title">Design & Code<br>Bridging the Gap</h2>
+                    <p class="text-body" style="margin-bottom: 24px;">
+                        見た目の美しさだけでなく、情報設計の整合性と実装の持続可能性を重視しています。ユーザーの目的達成を最短距離で導くUIと、運用負荷の低いコード品質を提供することが私の役割です。
+                    </p>
+                    <p class="text-body">
+                        スタートアップのMVP開発から、大手企業のコーポレートサイトリニューアルまで、規模を問わず「成果」にコミットする制作を行います。
+                    </p>
+                    
+                    <div class="stat-list">
+                        <div class="stat-item">
+                            <h4>7+</h4>
+                            <p>Years Experience</p>
+                        </div>
+                        <div class="stat-item">
+                            <h4>40+</h4>
+                            <p>Projects Delivered</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-visual reveal delay-200">
+                    <!-- CSS Abstract Art Background -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WORKS -->
+    <section id="works" class="section" style="background-color: rgba(0,0,0,0.02);">
+        <div class="container">
+            <span class="text-section-subtitle reveal">Selected Works</span>
+            <h2 class="text-section-title reveal" style="margin-bottom: 40px;">Featured Projects</h2>
+            
+            <div class="works-grid" id="works-grid">
+                <!-- Javascript will populate this -->
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="section">
+        <div class="container">
+            <div class="contact-layout reveal">
+                <span class="text-section-subtitle">Get in Touch</span>
+                <h2 class="text-section-title">Let's work together</h2>
+                <p class="text-body">
+                    新しいプロジェクトのご相談、技術的な質問、または単なる挨拶でも構いません。<br>
+                    お気軽にご連絡ください。通常24時間以内に返信いたします。
+                </p>
+                <a href="mailto:hello@example.com" class="btn-primary">hello@example.com</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="container footer-inner">
+            <div>
+                <span style="font-weight: 700; font-size: 1.1rem; display: block; margin-bottom: 8px;">MyPortfolio.</span>
+                <a href="#" style="font-size: 0.9rem; color: var(--c-text-primary); display: block; margin-bottom: 8px; font-family: monospace; opacity: 0.8;">https://www.myportfolio.design</a>
+                <span class="copyright">&copy; 2024 MyPortfolio. All Rights Reserved.</span>
+            </div>
+            <div class="footer-links">
+                <a href="#" class="footer-link">Twitter / X</a>
+                <a href="#" class="footer-link">GitHub</a>
+                <a href="#" class="footer-link">LinkedIn</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="modal-overlay" aria-hidden="true">
+        <div class="modal-content" role="dialog" aria-modal="true">
+            <button class="btn-close" id="modal-close" aria-label="Close modal">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+            <div class="modal-body" id="modal-body">
+                <!-- Dynamic Content Here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DATA
+        const projects = [
+            {
+                id: 1,
+                title: "Fintech Dashboard UI",
+                url: "https://demo-fintech-app.com",
+                category: "UI/UX Design",
+                excerpt: "金融機関向けの資産管理ダッシュボード。複雑なデータを直感的に可視化し、ユーザーの意思決定速度を30%向上。",
+                role: "Lead Designer / Frontend Dev",
+                tech: ["React", "TypeScript", "D3.js", "Figma"],
+                result: "MAU 120%増, ユーザー定着率改善",
+                desc: "従来の管理画面は情報過多で離脱率が高かったため、情報の優先順位を整理。カード型のUIを採用し、重要な指標を一目で把握できるように再設計しました。また、ダークモード対応によりプロトレーダーの利用環境にも配慮しています。"
+            },
+            {
+                id: 2,
+                title: "E-Commerce Rebrand",
+                url: "https://store-example.jp",
+                category: "Web Development",
+                excerpt: "アパレルブランドのECサイトリニューアル。ヘッドレスCMS導入による表示速度改善と、ブランド世界観の再構築。",
+                role: "Technical Director",
+                tech: ["Next.js", "Shopify API", "Tailwind CSS"],
+                result: "PageSpeed Score 98, CVR 1.5倍",
+                desc: "Shopifyをバックエンドに使用し、フロントエンドをNext.jsで完全自社開発。画像の遅延読み込み最適化とキャッシュ戦略により、Lighthouseスコアを大幅に改善。購入までの遷移をスムーズにし、カゴ落ち率を低減させました。"
+            },
+            {
+                id: 3,
+                title: "Corporate Identity System",
+                url: "https://ai-startup-inc.co",
+                category: "Branding",
+                excerpt: "AIスタートアップのCI/VI策定。ロゴデザインからWebガイドライン、名刺、ノベルティまで一貫したデザインシステムを構築。",
+                role: "Art Director",
+                tech: ["Illustrator", "Brand Strategy", "Guidelines"],
+                result: "シリーズB調達成功, 採用応募数2倍",
+                desc: "「先進性」と「人間味」の融合をテーマに、有機的な曲線を用いたロゴタイプを開発。カラーパレットは信頼感のあるディープブルーを基調に、アクセントとしてネオングリーンを採用し、革新性を表現しました。"
+            }
+        ];
+
+        // DOM ELEMENTS
+        const worksGrid = document.getElementById('works-grid');
+        const modalOverlay = document.getElementById('modal-overlay');
+        const modalClose = document.getElementById('modal-close');
+        const modalBody = document.getElementById('modal-body');
+        const navLinks = document.querySelectorAll('.nav-link');
+        const sections = document.querySelectorAll('section');
+
+        // RENDER WORKS
+        function renderWorks() {
+            worksGrid.innerHTML = projects.map(project => `
+                <div class="work-card reveal" data-id="${project.id}">
+                    <div class="work-header">
+                        <span class="work-category">${project.category}</span>
+                    </div>
+                    <h3 class="work-title">${project.title}</h3>
+                    <p class="work-excerpt">${project.excerpt}</p>
+                    <div class="work-meta">
+                        <span>Role: ${project.role.split('/')[0]}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            // Add Click Events
+            document.querySelectorAll('.work-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const id = parseInt(card.dataset.id);
+                    openModal(id);
+                });
+            });
+        }
+
+        // MODAL LOGIC
+        function openModal(id) {
+            const project = projects.find(p => p.id === id);
+            if (!project) return;
+
+            const techTags = project.tech.map(t => `<span class="tech-tag">${t}</span>`).join('');
+
+            modalBody.innerHTML = `
+                <span class="work-category" style="margin-bottom:12px; display:inline-block;">${project.category}</span>
+                <h3>${project.title}</h3>
+                <a href="${project.url}" target="_blank" rel="noopener noreferrer" class="modal-link">
+                    ${project.url}
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+                </a>
+                <span class="modal-role">${project.role}</span>
+                
+                <div class="modal-detail-grid">
+                    <div class="detail-item">
+                        <h5>Technologies</h5>
+                        <div class="tag-container">${techTags}</div>
+                    </div>
+                    <div class="detail-item">
+                        <h5>Key Result</h5>
+                        <p style="font-size:0.9rem; font-weight:600;">${project.result}</p>
+                    </div>
+                </div>
+
+                <div class="modal-desc">
+                    <h5 style="font-size:0.8rem; text-transform:uppercase; color:var(--c-text-secondary); margin-bottom:8px;">Project Details</h5>
+                    <p style="line-height:1.8; font-size:0.95rem;">${project.desc}</p>
+                </div>
+            `;
+
+            modalOverlay.classList.add('is-open');
+            document.body.style.overflow = 'hidden'; // Prevent scrolling
+        }
+
+        function closeModal() {
+            modalOverlay.classList.remove('is-open');
+            document.body.style.overflow = '';
+        }
+
+        modalClose.addEventListener('click', closeModal);
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) closeModal();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modalOverlay.classList.contains('is-open')) closeModal();
+        });
+
+        // INTERSECTION OBSERVER (ANIMATION & NAV HIGHLIGHT)
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        // Nav Active State on Scroll
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= (sectionTop - sectionHeight / 3)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // INITIALIZE
+        document.addEventListener('DOMContentLoaded', () => {
+            renderWorks();
+        });
+
+    </script>
+</body>
+</html>
